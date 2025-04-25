@@ -27,11 +27,6 @@ statusbars.onStatusReached(StatusBarKind.EnemyHealth, statusbars.StatusCompariso
 statusbars.onZero(StatusBarKind.Energy, function (status) {
     game.over(true)
 })
-statusbars.onStatusReached(StatusBarKind.Energy, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Percentage, 80, function (status) {
-    statusbar.say("80%")
-    music.magicWand.play()
-    mySprite.say("Hooray")
-})
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     statusbar.value += 1
 })
