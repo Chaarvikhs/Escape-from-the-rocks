@@ -5,7 +5,6 @@ namespace StatusBarKind {
     export const EnemyEnergy = StatusBarKind.create()
 }
 statusbars.onStatusReached(StatusBarKind.Energy, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Percentage, 5, function (status) {
-    statusbar.say("Low Energy 10%")
     music.jumpDown.play()
 })
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -17,6 +16,19 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     projectile = sprites.createProjectileFromSprite(assets.image`galgaDart3`, mySprite, 0, -70)
     myEnemy.destroy()
     statusbar.value += 1
+})
+statusbars.onZero(StatusBarKind.EnemyHealth, function (status) {
+    game.over(false)
+    game.reset()
+})
+controller.A.onEvent(ControllerButtonEvent.Released, function () {
+    statusbar.value += -4
+})
+controller.up.onEvent(ControllerButtonEvent.Released, function () {
+    statusbar.value += -4
+})
+statusbars.onStatusReached(StatusBarKind.EnemyHealth, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Percentage, 5, function (status) {
+    knife.say("Less knives")
 })
 statusbars.onStatusReached(StatusBarKind.Energy, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Percentage, 100, function (status) {
     game.over(true)
@@ -35,6 +47,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
 })
 let myEnemy: Sprite = null
 let projectile: Sprite = null
+let knife: StatusBarSprite = null
 let statusbar: StatusBarSprite = null
 let mySprite: Sprite = null
 scene.setBackgroundImage(img`
@@ -228,13 +241,19 @@ game.setDialogFrame(img`
     ..................................................................
     `)
 mySprite = sprites.create(assets.image`Bobby`, SpriteKind.Player)
-game.showLongText("Cvj Games Presents", DialogLayout.Full)
-game.showLongText("Escape from ghost", DialogLayout.Full)
+game.showLongText("Cvj Games Presents", DialogLayout.Center)
+game.showLongText("Escape from the rocks", DialogLayout.Center)
+game.showLongText("Rules", DialogLayout.Top)
+game.showLongText("The rules are simple. When the rock comes to hit you, press the \"A\" button on the controller or press the up button to release the knife at the arrows and to escape from them. continue to release the knife when the rocks come to hit you. you will also see that every time you release the knife the status bar level increases and when the rock hits you it decreases, When it comes to 80% it shows \"80%\" near the status bar. when the status bar is full by releasing all the knives, YOU WIN", DialogLayout.Full)
+game.showLongText("Note", DialogLayout.Top)
+game.showLongText("Release the knife when only in need", DialogLayout.Top)
 statusbar = statusbars.create(100, 4, StatusBarKind.Energy)
 statusbar.attachToSprite(mySprite, -50, 0)
 statusbar.value = 10
 statusbar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
-mySprite.say("Hero")
+knife = statusbars.create(100, 4, StatusBarKind.EnemyHealth)
+knife.attachToSprite(mySprite, -60, 0)
+knife.value = 100
 game.onUpdateInterval(1000, function () {
     myEnemy = sprites.createProjectileFromSide(assets.image`UFO`, 0, 50)
     myEnemy.x = randint(5, 115)
